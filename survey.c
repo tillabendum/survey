@@ -67,12 +67,19 @@ printf("Analyzing format:\n");
 size_t length = strlen( format );
 
 bool  start = false;
+char buf[length + 1];
+buf[0] = '\0';
 for (size_t i = 0; i < length; i++)
   {
     printf("%c:", format[i]);
 
     if ( format[i] == '%' )
       {
+        if( strlen( buf ) )
+          {
+            printf("create literal \"%s\"", buf);
+            buf[0]= '\0';
+          }
         printf("start\n");
         start = true;
       }
@@ -90,22 +97,39 @@ for (size_t i = 0; i < length; i++)
             case '7':
             case '8':
             case '9':
+              strncat(buf, format + i, 1);
               printf("number\n");
               break;
             case 'h':
-              printf("hex\n");
+              if( strlen( buf ) )
+                {
+                  printf("create hex number \"%s\"\n", buf);
+                  buf[0]= '\0';
+                }
               start =false;
               break;
             case 'd':
-              printf("dec\n");
+              if( strlen( buf ) )
+                {
+                  printf("create dec number \"%s\"\n", buf);
+                  buf[0]= '\0';
+                }
               start =false;
               break;
             case 'b':
-              printf("bin\n");
+              if( strlen( buf ) )
+                {
+                  printf("create bin number \"%s\"\n", buf);
+                  buf[0]= '\0';
+                }
               start =false;
               break;
             case 'n':
-              printf("nihil\n");
+              if( strlen( buf ) )
+                {
+                  printf("create nihil number \"%s\"\n", buf);
+                  buf[0]= '\0';
+                }
               start =false;
               break;
             default:
@@ -115,8 +139,20 @@ for (size_t i = 0; i < length; i++)
       }
     else
       {
+      strncat(buf, format + i, 1);
       printf("literal\n");
       }
+  }
+
+if (start)
+  {
+    printf("non-terminated format");
+    return 1;
+  }
+else if ( strlen( buf ) )
+  {
+    printf("create literal \"%s\"\n", buf);
+    buf[0]= '\0';
   }
 
   return 0;

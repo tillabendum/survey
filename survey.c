@@ -5,10 +5,12 @@
 #include <unistd.h>
 #include <string.h>
 
+typedef enum {LITERAL, HEX, DEC, BIN, NIHIL} record_type_t;
+
 typedef struct{
-  enum {LITERAL, HEX, DEC, BIN, NIHIL} type;
-  char *literal;
-  int  num_digits;
+  record_type_t   type;
+  char          *literal;
+  int             num_digits;
   } record_t;
 
 // Prototypes
@@ -103,7 +105,9 @@ for (size_t i = 0; i < length; i++)
             case 'h':
               if( strlen( buf ) )
                 {
-                  printf("create hex number \"%s\"\n", buf);
+                  int value;
+                  value = atoi( buf );
+                  printf("create hex number with %d digits\n", value);
                   buf[0]= '\0';
                 }
               start =false;

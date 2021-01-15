@@ -25,6 +25,7 @@ Record::Record(){
 
 int make_number_record( string *, record_type_t, vector<Record> * );
 int make_literal_record( string *, vector<Record> *);
+string toBinary(int);
 
 int main (int argc, char **argv)
   {
@@ -32,7 +33,6 @@ int main (int argc, char **argv)
   // Parsing options
   ////////////////////////////////////////////////////////////////////////////////
     char *cformat = NULL;
-    int index;
     int c;
 
     opterr = 0;
@@ -59,8 +59,7 @@ int main (int argc, char **argv)
 
     printf ("format = %s\n", cformat);
 
-    for (index = optind; index < argc; index++)
-      printf ("Non-option argument %s\n", argv[index]);
+    int non_option_argument = atoi(argv[optind]);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Analyzing format
@@ -138,7 +137,31 @@ int main (int argc, char **argv)
     else if ( !buf.empty() )
       make_literal_record( &buf, &records );
 
-    cout << records.size() << endl;
+    cout << "found " << records.size() << endl;
+
+    // Counting formatted bits
+    size_t num_digits=0;
+    for( size_t i = 0; i < records.size(); i++ )
+      {
+        if( records[i].type != LITERAL )
+          num_digits += records[i].num_digits;
+      }
+    cout << "number of digits " << num_digits << endl;
+    string bin_non_option = toBinary( non_option_argument );
+    cout << non_option_argument << "=" << bin_non_option << endl;
+
+    if( num_digits > bin_non_option.size() )
+      {
+        size_t num_padding_digits;
+        num_padding_digits = num_digits - bin_non_option.size();
+        for( size_t i = 0; i < num_padding_digits; i++ )
+          bin_non_option = "0" + bin_non_option;
+      }
+
+    cout << bin_non_option << endl;
+
+
+
   return 0;
   } // main
 
@@ -175,5 +198,10 @@ int make_literal_record( string *buf, vector<Record> *records )
     return 0;
   }
 
-
+string toBinary(int n)
+  {
+    std::string r;
+    while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
+    return r;
+  }
 

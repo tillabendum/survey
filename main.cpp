@@ -1,7 +1,26 @@
 
-#include "main.h"
+#include <unistd.h>
+#include <iostream>
+#include <string>
 
 using namespace std;
+
+class Record{
+    typedef enum {LITERAL, HEX, DEC, BIN, NIHIL} record_type_t;
+    public:
+      Record();
+
+    public:
+      record_type_t       type;
+      std::string         literal;
+      int                 num_digits;
+  };
+
+// Constructor
+Record::Record(){
+};
+
+
 
 int main (int argc, char **argv)
   {
@@ -44,8 +63,8 @@ int main (int argc, char **argv)
     ////////////////////////////////////////////////////////////////////////////////
     cout << "Analyzing format\n";
     string format = string( cformat );
-    Record record;
 
+    Record record;
 
 
     cout << format << endl;

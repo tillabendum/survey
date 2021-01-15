@@ -44,7 +44,7 @@ int main (int argc, char **argv)
     ////////////////////////////////////////////////////////////////////////////////
     cout << "Analyzing format\n";
     string format = string( cformat );
-
+    Record record;
 
 
 

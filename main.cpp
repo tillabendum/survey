@@ -23,7 +23,8 @@ Record::Record(){
 };
 
 
-int make_number_record( string buf, record_type_t type, vector<Record> * );
+int make_number_record( string *, record_type_t, vector<Record> * );
+int make_literal_record( string *, vector<Record> *);
 
 int main (int argc, char **argv)
   {
@@ -74,16 +75,12 @@ int main (int argc, char **argv)
 
     for (size_t i = 0; i < length; i++)
       {
-        printf("%c:", format[i]);
+        //printf("%c:", format[i]);
 
         if ( format[i] == '%' )
           {
             if( !buf.empty() )
-              {
-                cout << buf;
-                buf.clear();
-              }
-            printf("start\n");
+              make_literal_record( &buf, &records );
             start = true;
           }
         else if ( start )
@@ -103,22 +100,22 @@ int main (int argc, char **argv)
                   buf += format[i];
                   break;
                 case 'h':
-                  if( make_number_record( buf, HEX, &records ) )
+                  if( make_number_record( &buf, HEX, &records ) )
                     return 1;
                   start =false;
                   break;
                 case 'd':
-                  if( make_number_record( buf, DEC, &records ) )
+                  if( make_number_record( &buf, DEC, &records ) )
                     return 1;
                   start =false;
                   break;
                 case 'b':
-                  if( make_number_record( buf, BIN, &records ) )
+                  if( make_number_record( &buf, BIN, &records ) )
                     return 1;
                   start =false;
                   break;
                 case 'n':
-                  if( make_number_record( buf, NIHIL, &records ) )
+                  if( make_number_record( &buf, NIHIL, &records ) )
                     return 1;
                   start =false;
                   break;
@@ -139,10 +136,7 @@ int main (int argc, char **argv)
         return 1;
       }
     else if ( !buf.empty() )
-      {
-        cout <<  buf << endl;
-        buf.clear();
-      }
+      make_literal_record( &buf, &records );
 
     cout << records.size() << endl;
   return 0;
@@ -150,24 +144,34 @@ int main (int argc, char **argv)
 
 
 
-int make_number_record( string buf, record_type_t type, vector<Record> *records )
+int make_number_record( string *buf, record_type_t type, vector<Record> *records )
   {
-    if( !buf.empty() )
+    if( !buf->empty() )
       {
         int value;
-        value = std::stoi( buf, 0, 10 );
+        value = std::stoi( *buf, 0, 10 );
         Record  record;
         record.type = type;
         record.num_digits = value;
         records->push_back( record );
         printf("create number with %d digits\n", value);
-        buf.clear();
+        buf->clear();
       }
     else
       {
         printf("Invalid format\n");
         return 1;
       }
+    return 0;
+  }
+
+int make_literal_record( string *buf, vector<Record> *records )
+  {
+    Record  record;
+    record.type = LITERAL;
+    records -> push_back( record );
+    cout << "create literal '" << *buf << "'" << endl;
+    buf->clear();
     return 0;
   }
 

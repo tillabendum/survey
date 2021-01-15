@@ -13,6 +13,9 @@ class Record{
       Record();
 
     public:
+      string report( string*, size_t* );
+
+    public:
       record_type_t       type;
       std::string         literal;
       int                 num_digits;
@@ -21,6 +24,35 @@ class Record{
 // Constructor
 Record::Record(){
 };
+
+// Report
+string Record::report(string *buf, size_t *pos)
+  {
+    if( type == LITERAL )
+      {
+        return literal;
+      }
+    else
+      {
+        string  sub_buf;
+        sub_buf = buf->substr( *pos, num_digits );
+        *pos = *pos + num_digits;
+
+        //int sub_int;
+
+        return sub_buf;
+      }
+    /*
+    switch( type )
+      {
+        case LITERAL:
+          str = literal;
+          break;
+
+        case HEX:
+      }
+    */
+  };
 
 
 int make_number_record( string *, record_type_t, vector<Record> * );
@@ -160,9 +192,16 @@ int main (int argc, char **argv)
 
     cout << bin_non_option << endl;
 
+////////////////////////////////////////////////////////////////////////////////
+// Reporting
+////////////////////////////////////////////////////////////////////////////////
+    string  str;
+    size_t     pos = 0;
+    for( size_t i = 0; i < records.size(); i++ )
+      str += records[i].report(&bin_non_option, &pos);
 
-
-  return 0;
+    cout << str << endl;
+    return 0;
   } // main
 
 
@@ -192,6 +231,7 @@ int make_literal_record( string *buf, vector<Record> *records )
   {
     Record  record;
     record.type = LITERAL;
+    record.literal = *buf;
     records -> push_back( record );
     cout << "create literal '" << *buf << "'" << endl;
     buf->clear();

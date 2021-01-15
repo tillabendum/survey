@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <string.h>
 
+const int MAX_NUM_RECORDS   = 100;
+const int MAX_LITERAL_SIZE  = 100;
+
 typedef enum {LITERAL, HEX, DEC, BIN, NIHIL} record_type_t;
 
 typedef struct{
@@ -15,6 +18,8 @@ typedef struct{
 
 // Prototypes
 void print_record( record_t );
+int  make_number_record(char *, record_type_t, record_t *, int *);
+
 
 
 int main (int argc, char **argv)
@@ -27,6 +32,8 @@ int main (int argc, char **argv)
   char *format = NULL;
   int index;
   int c;
+  record_t records[MAX_NUM_RECORDS];
+  int records_pointer = 0;
 
   opterr = 0;
 
@@ -100,40 +107,25 @@ for (size_t i = 0; i < length; i++)
             case '8':
             case '9':
               strncat(buf, format + i, 1);
-              printf("number\n");
               break;
             case 'h':
-              if( strlen( buf ) )
-                {
-                  int value;
-                  value = atoi( buf );
-                  printf("create hex number with %d digits\n", value);
-                  buf[0]= '\0';
-                }
+              if( make_number_record( buf, HEX, records, &records_pointer ) )
+                return 1;
               start =false;
               break;
             case 'd':
-              if( strlen( buf ) )
-                {
-                  printf("create dec number \"%s\"\n", buf);
-                  buf[0]= '\0';
-                }
+              if( make_number_record( buf, DEC, records, &records_pointer ) )
+                return 1;
               start =false;
               break;
             case 'b':
-              if( strlen( buf ) )
-                {
-                  printf("create bin number \"%s\"\n", buf);
-                  buf[0]= '\0';
-                }
+              if( make_number_record( buf, BIN, records, &records_pointer ) )
+                return 1;
               start =false;
               break;
             case 'n':
-              if( strlen( buf ) )
-                {
-                  printf("create nihil number \"%s\"\n", buf);
-                  buf[0]= '\0';
-                }
+              if( make_number_record( buf, NIHIL, records, &records_pointer ) )
+                return 1;
               start =false;
               break;
             default:
@@ -144,7 +136,6 @@ for (size_t i = 0; i < length; i++)
     else
       {
       strncat(buf, format + i, 1);
-      printf("literal\n");
       }
   }
 
@@ -159,6 +150,9 @@ else if ( strlen( buf ) )
     buf[0]= '\0';
   }
 
+
+  printf("%d", records_pointer);
+
   return 0;
 }
 
@@ -172,5 +166,69 @@ void print_record( record_t record)
       printf("HEX:");
     else
       printf("UNKNOWN");
-
   }
+
+
+int make_number_record(char *buf, record_type_t type, record_t* records, int *records_pointer )
+  {
+    if( strlen( buf ) )
+      {
+        int value;
+        value = atoi( buf );
+        if(*records_pointer < MAX_NUM_RECORDS)
+          {
+            record_t  record;
+            record.type = type;
+            record.num_digits = value;
+            records[*records_pointer]= record;
+            *records_pointer = *records_pointer + 1;
+          }
+        else
+          {
+            printf("records overflow");
+            return 1;
+          }
+
+        printf("create number with %d digits\n", value);
+        buf[0]= '\0';
+      }
+    else
+      {
+        printf("Invalid format\n");
+        return 1;
+      }
+    return 0;
+  }
+/*
+int make_word_record(char *buf, record_t* records, int *records_pointer )
+  {
+    if( strlen( buf ) )
+      {
+        int value;
+        value = atoi( buf );
+        if(*records_pointer < MAX_NUM_RECORDS)
+          {
+            record_t  record;
+            record.type = LITERAL;
+            strcpy( record.literal, buf );
+            records[*records_pointer]= record;
+            *records_pointer = *records_pointer + 1;
+          }
+        else
+          {
+            printf("records overflow");
+            return 1;
+          }
+
+        printf("create number with %d digits\n", value);
+        buf[0]= '\0';
+      }
+    else
+      {
+        printf("Invalid format\n");
+        return 1;
+      }
+    return 0;
+  }
+
+*/

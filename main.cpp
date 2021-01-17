@@ -57,6 +57,8 @@ string Record::report(string *buf, size_t *pos)
             case NIHIL:
               str = "";
               break;
+            case LITERAL:
+              ; // to remove warning when built
 
           }
         return str;
@@ -78,14 +80,14 @@ int main (int argc, char **argv)
 
     opterr = 0;
 
-    while ((c = getopt (argc, argv, "c:")) != -1)
+    while ((c = getopt (argc, argv, "f:")) != -1)
       switch (c)
         {
-        case 'c':
+        case 'f':
           cformat = optarg;
           break;
         case '?':
-          if (optopt == 'c')
+          if (optopt == 'f')
             fprintf (stderr, "Option -%c requires an argument.\n", optopt);
           else if (isprint (optopt))
             fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -98,14 +100,12 @@ int main (int argc, char **argv)
           abort ();
         }
 
-    printf ("format = %s\n", cformat);
 
     int non_option_argument = atoi(argv[optind]);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Analyzing format
     ////////////////////////////////////////////////////////////////////////////////
-    cout << "Analyzing format\n";
     string format = string( cformat );
     vector<Record> records;
 
@@ -115,8 +115,6 @@ int main (int argc, char **argv)
 
     for (size_t i = 0; i < length; i++)
       {
-        //printf("%c:", format[i]);
-
         if ( format[i] == '%' )
           {
             if( !buf.empty() )
@@ -178,8 +176,6 @@ int main (int argc, char **argv)
     else if ( !buf.empty() )
       make_literal_record( &buf, &records );
 
-    cout << "found " << records.size() << endl;
-
     // Counting formatted bits
     size_t num_digits=0;
     for( size_t i = 0; i < records.size(); i++ )
@@ -187,9 +183,7 @@ int main (int argc, char **argv)
         if( records[i].type != LITERAL )
           num_digits += records[i].num_digits;
       }
-    cout << "number of digits " << num_digits << endl;
     string bin_non_option = toBinary( non_option_argument );
-    cout << non_option_argument << "=" << bin_non_option << endl;
 
     if( num_digits > bin_non_option.size() )
       {
@@ -198,8 +192,6 @@ int main (int argc, char **argv)
         for( size_t i = 0; i < num_padding_digits; i++ )
           bin_non_option = "0" + bin_non_option;
       }
-
-    cout << bin_non_option << endl;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Reporting
@@ -225,7 +217,6 @@ int make_number_record( string *buf, record_type_t type, vector<Record> *records
         record.type = type;
         record.num_digits = value;
         records->push_back( record );
-        printf("create number with %d digits\n", value);
         buf->clear();
       }
     else
@@ -242,7 +233,6 @@ int make_literal_record( string *buf, vector<Record> *records )
     record.type = LITERAL;
     record.literal = *buf;
     records -> push_back( record );
-    cout << "create literal '" << *buf << "'" << endl;
     buf->clear();
     return 0;
   }

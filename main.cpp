@@ -35,23 +35,32 @@ string Record::report(string *buf, size_t *pos)
     else
       {
         string  sub_buf;
+        string  str;
         sub_buf = buf->substr( *pos, num_digits );
         *pos = *pos + num_digits;
 
-        //int sub_int;
+        int sub_intv = std::stoi( sub_buf, 0, 2 );
+        char converted[65];
+        switch( type )
+          {
+            case HEX:
+              sprintf( converted, "%x", sub_intv);
+              str = string( converted );
+              break;
+            case DEC:
+              sprintf( converted, "%d", sub_intv);
+              str = string( converted );
+              break;
+            case BIN:
+              str = sub_buf;
+              break;
+            case NIHIL:
+              str = "";
+              break;
 
-        return sub_buf;
+          }
+        return str;
       }
-    /*
-    switch( type )
-      {
-        case LITERAL:
-          str = literal;
-          break;
-
-        case HEX:
-      }
-    */
   };
 
 
@@ -130,7 +139,7 @@ int main (int argc, char **argv)
                 case '9':
                   buf += format[i];
                   break;
-                case 'h':
+                case 'x':
                   if( make_number_record( &buf, HEX, &records ) )
                     return 1;
                   start =false;

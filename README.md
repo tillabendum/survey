@@ -80,6 +80,12 @@ EXAMPLES
     >>survey -f 'foo:%6nbar=%5x haos=%3b' 145
     foo:bar=12 haos=001
 
+BUILD
+=====
+
+  make
+
+
 TODO
 ====
 

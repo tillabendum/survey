@@ -31,7 +31,7 @@ Escape sequence format
 
   %1b -- 1 bit that is represented as is
 
-  %8d -- 8 bits represented
+  %8d -- 8 bits represented in decimal format
 
   %3n -- (nihil) 3 bits are not represented and dropped away
 
@@ -86,4 +86,4 @@ TODO
   * Allow argument sizes that exceed format
   * Allow non-decimal argument
   * Allow multiple arguments
-
+  * Allow stdin as argument source

@@ -31,20 +31,22 @@ Escape sequence format
 
   %1b -- 1 bit that is represented as is
 
-  %8d -- 8 bits represented in decimal format
+  %8d -- 8 bits represented in signed decimal format
+
+  %6u -- 6 bits represented in unsigned decimal format
 
   %3n -- (nihil) 3 bits are not represented and dropped away
 
 
     1 0 1  0 1  0 1 1 0 1 = 685
     -----  ---  ---------
-     %3d   %2n    %5x
+     %3u   %2n    %5x
 
     >> survey -f '%3d%2n %5x' 685
     5 d
 
-  Leftmost 3 bits are represented as decimal, next 2 bits are ignored, then
-  space ( between 5 and d ) shown as is and 5 bit shown as hex.
+  Leftmost 3 bits are represented as unsigned decimal, next 2 bits are ignored,
+  then space ( between 5 and d ) shown as is and 5 bit shown as hex.
 
   If argument binary representation takes less bits than format demands, missing
   leftmost digits are padded with zeros.
@@ -90,9 +92,9 @@ TODO
 ====
 
   * Allow multiple arguments (repetitive format application)
-  * Allow unsigned and signed decimals
   * Allow stdin as argument source
   * Allow argument sizes that exceed format ( probably by reversing printout )
-  * Allow dump formatting (with format that contains \n)
+  * Allow dump formatting (with format that contains %\)
   * Allow file reading for format (-F option)
   * Allow enumeration format ( %3{111=GA, 000=TA, 001=EXA}e)
+  * Make format options h<->x d<->i

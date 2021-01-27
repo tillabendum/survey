@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum {LITERAL, HEX, DEC, BIN, NIHIL} record_type_t;
+typedef enum {LITERAL, HEX, DEC, UNSIGNED, BIN, NIHIL} record_type_t;
 
 class Record{
     public:
@@ -48,6 +48,9 @@ string Record::report(string *buf, size_t *pos)
               str = string( converted );
               break;
             case DEC:
+              if( sub_buf[0] == '1' )
+                sub_intv = sub_intv - ( 1 << num_digits);
+            case UNSIGNED:
               sprintf( converted, "%d", sub_intv);
               str = string( converted );
               break;
@@ -144,6 +147,11 @@ int main (int argc, char **argv)
                   break;
                 case 'd':
                   if( make_number_record( &buf, DEC, &records ) )
+                    return 1;
+                  start =false;
+                  break;
+                case 'u':
+                  if( make_number_record( &buf, UNSIGNED, &records ) )
                     return 1;
                   start =false;
                   break;

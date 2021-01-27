@@ -141,11 +141,13 @@ int main (int argc, char **argv)
                   buf += format[i];
                   break;
                 case 'x':
+                case 'h':
                   if( make_number_record( &buf, HEX, &records ) )
                     return 1;
                   start =false;
                   break;
                 case 'd':
+                case 'i':
                   if( make_number_record( &buf, DEC, &records ) )
                     return 1;
                   start =false;

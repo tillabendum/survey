@@ -17,25 +17,33 @@ DESCRIPTION
 FORMAT
 ======
 
-  Format string is a character sequence that is either charcters as is or escape
-  sequences. Escape sequence starts with '%' symbol and terminates with one of
-  those characters 'x' 'b' 'd' 'n'. Between % and termination character there is
-  a decimal that state number of bits.
-
-  There is no way print '%' as is.
+  Format string is a character sequence that is either characters as is or
+  escape sequences.
 
 Escape sequence format
 ----------------------
 
-  %4x -- 4 bits that must be converted to hexadecimal
+  Escape sequence starts with '%' symbol and terminates with
+  one of those characters 'x' 'h' 'b' 'd' 'i' 'n'. Between % and termination
+  characters 'x' 'h' 'b' 'd' 'i' 'n' must be a decimal number that states number
+  of bits in a field
 
-  %1b -- 1 bit that is represented as is
+  'x' and 'h' terminators are equivalent
 
-  %8d -- 8 bits represented in signed decimal format
+  'd' and 'i' terminators are equivalent
 
-  %6u -- 6 bits represented in unsigned decimal format
+  There is no way to print '%' as is.
 
-  %3n -- (nihil) 3 bits are not represented and dropped away
+
+  %4x or %4h  -- 4 bits that must be converted to hexadecimal
+
+  %1b         -- 1 bit that is represented as is
+
+  %8d or %8i  -- 8 bits represented in signed decimal format
+
+  %6u         -- 6 bits represented in unsigned decimal format
+
+  %3n         -- (nihil) 3 bits are not represented and dropped away
 
 
     1 0 1  0 1  0 1 1 0 1 = 685

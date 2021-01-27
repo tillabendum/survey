@@ -101,7 +101,7 @@ int main (int argc, char **argv)
         }
 
 
-    int non_option_argument = atoi(argv[optind]);
+    int non_option_argument = (int)strtol(argv[optind], NULL, 0);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Analyzing format

@@ -68,7 +68,7 @@ Limitations
 ARG
 ===
 
-  Integer decimal
+  Integer decimal (e.g 123) or hexadecimal (e.g 0x453)
 
 EXAMPLES
 ========
@@ -89,7 +89,10 @@ BUILD
 TODO
 ====
 
-  * Allow argument sizes that exceed format
-  * Allow non-decimal argument
-  * Allow multiple arguments
+  * Allow multiple arguments (repetitive format application)
+  * Allow unsigned and signed decimals
   * Allow stdin as argument source
+  * Allow argument sizes that exceed format ( probably by reversing printout )
+  * Allow dump formatting (with format that contains \n)
+  * Allow file reading for format (-F option)
+  * Allow enumeration format ( %3{111=GA, 000=TA, 001=EXA}e)

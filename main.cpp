@@ -13,59 +13,57 @@ class Record{
       Record();
 
     public:
-      string report( string*, size_t* );
+      string report( string*, size_t );
 
     public:
       record_type_t       type;
       std::string         literal;
       int                 num_digits;
+      bool                isLiteral();
   };
 
 // Constructor
 Record::Record(){
 };
 
+
+bool Record::isLiteral(){
+return type == LITERAL;
+}
+
+
 // Report
-string Record::report(string *buf, size_t *pos)
+string Record::report(string *buf, size_t pos)
   {
-    if( type == LITERAL )
+    string  sub_buf;
+    string  str;
+    sub_buf = buf->substr( pos, num_digits );
+    int sub_intv = std::stoi( sub_buf, 0, 2 );
+    char converted[65];
+    switch( type )
       {
-        return literal;
-      }
-    else
-      {
-        string  sub_buf;
-        string  str;
-        sub_buf = buf->substr( *pos, num_digits );
-        *pos = *pos + num_digits;
+        case HEX:
+          sprintf( converted, "%x", sub_intv);
+          str = string( converted );
+          break;
+        case DEC:
+          if( sub_buf[0] == '1' )
+            sub_intv = sub_intv - ( 1 << num_digits);
+        case UNSIGNED:
+          sprintf( converted, "%d", sub_intv);
+          str = string( converted );
+          break;
+        case BIN:
+          str = sub_buf;
+          break;
+        case NIHIL:
+          str = "";
+          break;
+        case LITERAL:
+          ; // to remove warning when built
 
-        int sub_intv = std::stoi( sub_buf, 0, 2 );
-        char converted[65];
-        switch( type )
-          {
-            case HEX:
-              sprintf( converted, "%x", sub_intv);
-              str = string( converted );
-              break;
-            case DEC:
-              if( sub_buf[0] == '1' )
-                sub_intv = sub_intv - ( 1 << num_digits);
-            case UNSIGNED:
-              sprintf( converted, "%d", sub_intv);
-              str = string( converted );
-              break;
-            case BIN:
-              str = sub_buf;
-              break;
-            case NIHIL:
-              str = "";
-              break;
-            case LITERAL:
-              ; // to remove warning when built
-
-          }
-        return str;
       }
+    return str;
   };
 
 
@@ -187,18 +185,18 @@ int main (int argc, char **argv)
       make_literal_record( &buf, &records );
 
     // Counting formatted bits
-    size_t num_digits=0;
+    size_t total_num_digits=0;
     for( size_t i = 0; i < records.size(); i++ )
       {
         if( records[i].type != LITERAL )
-          num_digits += records[i].num_digits;
+          total_num_digits += records[i].num_digits;
       }
     string bin_non_option = toBinary( non_option_argument );
 
-    if( num_digits > bin_non_option.size() )
+    if( total_num_digits > bin_non_option.size() )
       {
         size_t num_padding_digits;
-        num_padding_digits = num_digits - bin_non_option.size();
+        num_padding_digits = total_num_digits - bin_non_option.size();
         for( size_t i = 0; i < num_padding_digits; i++ )
           bin_non_option = "0" + bin_non_option;
       }
@@ -207,9 +205,15 @@ int main (int argc, char **argv)
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////
     string  str;
-    size_t     pos = 0;
-    for( size_t i = 0; i < records.size(); i++ )
-      str += records[i].report(&bin_non_option, &pos);
+    size_t     pos = bin_non_option.size();
+    for( int i = records.size() - 1; i >=0; i-- )
+      if( records[i].isLiteral() )
+        str = records[i].literal + str;
+      else
+        {
+          pos -= records[i].num_digits;
+          str = records[i].report(&bin_non_option, pos) + str;
+        }
 
     cout << str << endl;
     return 0;

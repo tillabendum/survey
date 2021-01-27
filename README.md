@@ -66,13 +66,14 @@ Escape sequence format
     >> survey -f '%3d%2n %5x' 45
     0 d
 
-Limitations
------------
+  If argument binary representation takes more bits than format demands, bits
+  out of format capacity are not used. Fields are filled from right to left.
 
-  If argument size in binary form exceeds number of bits that format claims,
-  result is inconsistent.
+    1 1 0 = 6
+      ---
+      %2d
 
-    >> survey '%2d' 4
+    >> survey -f '%2d' 6
     2
 
 ARG
@@ -101,8 +102,7 @@ TODO
 
   * Allow multiple arguments (repetitive format application)
   * Allow stdin as argument source
-  * Allow argument sizes that exceed format ( probably by reversing printout )
+  * Allow representation option that returns like examples (-n option)
   * Allow dump formatting (with format that contains %\)
   * Allow file reading for format (-F option)
   * Allow enumeration format ( %3{111=GA, 000=TA, 001=EXA}e)
-  * Make format options h<->x d<->i

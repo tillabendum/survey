@@ -24,9 +24,9 @@ Escape sequence format
 ----------------------
 
   Escape sequence starts with '%' symbol and terminates with
-  one of those characters 'x' 'h' 'b' 'd' 'i' 'n'. Between % and termination
-  characters 'x' 'h' 'b' 'd' 'i' 'n' must be a decimal number that states number
-  of bits in a field
+  one of those characters 'x' 'h' 'b' 'd' 'i' 'u' 'n'. Between % and termination
+  characters 'x' 'h' 'b' 'd' 'i' 'u' 'n' must be a decimal number that states
+  number of bits in a field
 
   'x' and 'h' terminators are equivalent
 
@@ -50,7 +50,7 @@ Escape sequence format
     -----  ---  ---------
      %3u   %2n    %5x
 
-    >> survey -f '%3d%2n %5x' 685
+    >> survey -f '%3u%2n %5x' 685
     5 d
 
   Leftmost 3 bits are represented as unsigned decimal, next 2 bits are ignored,
@@ -102,6 +102,7 @@ TODO
 
   * Allow multiple arguments (repetitive format application)
   * Allow stdin as argument source
+  * Allow pre-reverting bits (-r NUM_BITS)
   * Allow representation option that returns like examples (-n option)
   * Allow dump formatting (with format that contains %\)
   * Allow file reading for format (-F option)
